@@ -33,22 +33,22 @@ class Usuario(db.Model):
         email = (email or "").strip().lower()
         senha = senha or ""
         if not nome:
-            raise ValidacaoError("O nome é obrigatório.")
+            raise ValidacaoError("O nome é obrigatório.", "nome")
         if len(nome) > 80:
-            raise ValidacaoError("O nome deve ter no máximo 80 caracteres.")
+            raise ValidacaoError("O nome deve ter no máximo 80 caracteres.", "nome")
         if len(email) > 120 or not EMAIL_RE.match(email):
-            raise ValidacaoError("Informe um e-mail válido.")
+            raise ValidacaoError("Informe um e-mail válido.", "email")
         if len(senha) < SENHA_MIN:
-            raise ValidacaoError(f"A senha deve ter no mínimo {SENHA_MIN} caracteres.")
+            raise ValidacaoError(f"A senha deve ter no mínimo {SENHA_MIN} caracteres.", "senha")
         if senha != (confirmacao or ""):
-            raise ValidacaoError("A confirmação de senha não confere.")
+            raise ValidacaoError("A confirmação de senha não confere.", "confirmacao")
         return nome, email, senha
 
     @classmethod
     def cadastrar(cls, nome, email, senha, confirmacao):
         nome, email, senha = cls.validar(nome, email, senha, confirmacao)
         if cls.query.filter_by(email=email).first():
-            raise ValidacaoError("Já existe uma conta com esse e-mail.")
+            raise ValidacaoError("Já existe uma conta com esse e-mail.", "email")
         usuario = cls(nome=nome, email=email, senha_hash=generate_password_hash(senha))
         db.session.add(usuario)
         try:
@@ -58,7 +58,7 @@ class Usuario(db.Model):
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
-            raise ValidacaoError("Já existe uma conta com esse e-mail.")
+            raise ValidacaoError("Já existe uma conta com esse e-mail.", "email")
         return usuario
 
     @classmethod

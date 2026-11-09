@@ -86,7 +86,8 @@ def test_rotas_protegidas_redirecionam_para_login(client, url):
     r = client.get(url)
     assert r.status_code == 302 and r.headers["Location"].endswith("/login")
     r = client.get(url, follow_redirects=True)
-    assert "Faça login para continuar." in html(r)
+    assert "Entrar" in html(r)
+    assert "Faça login" not in html(r)  # redireciona em silêncio, sem aviso
 
 
 def test_posts_protegidos_sem_login(client, logado, app):
@@ -115,6 +116,7 @@ def test_menu_deslogado_esconde_areas_privadas(client):
     h = html(client.get("/login"))
     assert "Entrar" in h and "Criar conta" in h
     assert "Lançamentos" not in h and "Categorias" not in h
+    assert 'class="topo"' not in h  # telas de acesso não têm o cabeçalho padrão
 
 
 def test_menu_logado_mostra_nome_e_sair(logado):

@@ -11,7 +11,6 @@ def exigir_login():
     """before_request dos blueprints protegidos. Sem usuário na sessão -> /login."""
     if g.usuario is None:
         session.clear()
-        flash("Faça login para continuar.", "erro")
         return redirect(url_for("auth.login"))
 
 
@@ -24,6 +23,7 @@ def _entrar(usuario):
 def cadastro():
     if g.usuario:
         return redirect(url_for("dashboard.index"))
+    erros = {}
     if request.method == "POST":
         f = request.form
         try:
@@ -33,21 +33,22 @@ def cadastro():
             flash("Conta criada com sucesso. Bem-vindo(a)!", "sucesso")
             return redirect(url_for("dashboard.index"))
         except ValidacaoError as e:
-            flash(str(e), "erro")
-    return render_template("auth/cadastro.html", form=request.form)
+            erros = {e.campo: str(e)}
+    return render_template("auth/cadastro.html", form=request.form, erros=erros)
 
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     if g.usuario:
         return redirect(url_for("dashboard.index"))
+    erros = {}
     if request.method == "POST":
         usuario = Usuario.autenticar(request.form.get("email"), request.form.get("senha"))
         if usuario:
             _entrar(usuario)
             return redirect(url_for("dashboard.index"))
-        flash("E-mail ou senha incorretos.", "erro")
-    return render_template("auth/login.html", form=request.form)
+        erros = {"senha": "E-mail ou senha incorretos.", "email": ""}
+    return render_template("auth/login.html", form=request.form, erros=erros)
 
 
 @bp.route("/sair", methods=["POST"])

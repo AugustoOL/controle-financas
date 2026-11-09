@@ -4,7 +4,14 @@ TIPOS = ("receita", "despesa")
 
 
 class ValidacaoError(ValueError):
-    """Erro de regra de negócio/validação mostrado ao usuário."""
+    """Erro de regra de negócio/validação mostrado ao usuário.
+
+    `campo` (opcional) indica qual campo do formulário causou o erro,
+    para a tela mostrar a mensagem logo abaixo dele."""
+
+    def __init__(self, mensagem, campo=None):
+        super().__init__(mensagem)
+        self.campo = campo
 
 
 class Categoria(db.Model):
