@@ -9,8 +9,12 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-troque-em-producao")
     # Local: SQLite. Em hospedagem, defina DATABASE_URL (PostgreSQL).
     _db = os.environ.get("DATABASE_URL", f"sqlite:///{DB_PATH}")
-    # Alguns provedores entregam "postgres://", o SQLAlchemy exige "postgresql://"
-    SQLALCHEMY_DATABASE_URI = _db.replace("postgres://", "postgresql://", 1)
+    # Provedores entregam "postgres://" ou "postgresql://"; usamos o driver psycopg (v3)
+    for _prefixo in ("postgres://", "postgresql://"):
+        if _db.startswith(_prefixo):
+            _db = "postgresql+psycopg://" + _db[len(_prefixo):]
+            break
+    SQLALCHEMY_DATABASE_URI = _db
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
