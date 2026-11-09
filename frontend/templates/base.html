@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Controle de Finanças{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topo">
+    <div class="container topo-int">
+      <a class="marca" href="{{ url_for('dashboard.index') }}">💰 Controle de Finanças</a>
+      <nav aria-label="Navegação principal">
+        <a href="{{ url_for('dashboard.index') }}" {% if request.endpoint=='dashboard.index' %}aria-current="page"{% endif %}>Resumo</a>
+        <a href="{{ url_for('lancamentos.listar') }}" {% if request.endpoint and request.endpoint.startswith('lancamentos') %}aria-current="page"{% endif %}>Lançamentos</a>
+        <a href="{{ url_for('categorias.listar') }}" {% if request.endpoint and request.endpoint.startswith('categorias') %}aria-current="page"{% endif %}>Categorias</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in msgs %}
+        <div class="aviso aviso-{{ cat }}" role="{{ 'alert' if cat == 'erro' else 'status' }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block conteudo %}{% endblock %}
+  </main>
+  <footer class="container rodape">PIT II – Engenharia de Software · Controle de Finanças Pessoais</footer>
+</body>
+</html>

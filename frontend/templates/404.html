@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<h1>Página não encontrada</h1>
+<p>O item que você procura não existe ou foi removido.</p>
+<a class="btn" href="{{ url_for('dashboard.index') }}">Voltar ao início</a>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'Editar' if lancamento else 'Novo' }} lançamento · Controle de Finanças{% endblock %}
+{% block conteudo %}
+<h1>{{ 'Editar' if lancamento else 'Novo' }} lançamento</h1>
+{% set v = form if form else {} %}
+{% set descricao = v.get('descricao', lancamento.descricao if lancamento else '') %}
+{% set valor = v.get('valor', lancamento.valor if lancamento else '') %}
+{% set data = v.get('data', lancamento.data.isoformat() if lancamento else hoje) %}
+{% set cat_id = (v.get('categoria_id', lancamento.categoria_id if lancamento else '')|string) %}
+{% set obs = v.get('observacao', (lancamento.observacao or '') if lancamento else '') %}
+<form method="post" class="form" novalidate>
+  <label for="descricao">Descrição</label>
+  <input id="descricao" name="descricao" maxlength="100" required value="{{ descricao }}" placeholder="Ex.: Compras do mês">
+  <label for="valor">Valor (R$)</label>
+  <input id="valor" name="valor" inputmode="decimal" required value="{{ valor }}" placeholder="0,00">
+  <label for="data">Data</label>
+  <input id="data" name="data" type="date" required value="{{ data }}">
+  <label for="categoria_id">Categoria</label>
+  <select id="categoria_id" name="categoria_id" required>
+    <option value="">Selecione…</option>
+    {% for c in categorias %}
+      <option value="{{ c.id }}" {{ 'selected' if cat_id==c.id|string }}>{{ c.nome }} ({{ c.tipo }})</option>
+    {% endfor %}
+  </select>
+  <label for="observacao">Observação (opcional)</label>
+  <input id="observacao" name="observacao" maxlength="255" value="{{ obs }}">
+  <div class="botoes">
+    <button class="btn" type="submit">Salvar</button>
+    <a class="btn btn-sec" href="{{ url_for('lancamentos.listar') }}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

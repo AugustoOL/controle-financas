@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<div class="cab">
+  <h1>Resumo de {{ MESES[mes] }} de {{ ano }}</h1>
+  <div class="mes-nav">
+    <a class="btn btn-sec" href="{{ url_for('dashboard.index', ano=ant[0], mes=ant[1]) }}" aria-label="Mês anterior">‹ Anterior</a>
+    <a class="btn btn-sec" href="{{ url_for('dashboard.index', ano=prox[0], mes=prox[1]) }}" aria-label="Próximo mês">Próximo ›</a>
+  </div>
+</div>
+
+<section class="cards" aria-label="Totais do mês">
+  <div class="card receita"><span>Receitas</span><strong>{{ resumo.receitas|brl }}</strong></div>
+  <div class="card despesa"><span>Despesas</span><strong>{{ resumo.despesas|brl }}</strong></div>
+  <div class="card saldo {{ 'neg' if resumo.saldo < 0 else 'pos' }}"><span>Saldo</span><strong>{{ resumo.saldo|brl }}</strong></div>
+</section>
+
+<a class="btn" href="{{ url_for('lancamentos.novo') }}">+ Novo lançamento</a>
+
+<div class="duas-col">
+  <section>
+    <h2>Por categoria</h2>
+    {% if resumo.por_categoria %}
+    <table>
+      <thead><tr><th>Categoria</th><th>Tipo</th><th class="num">Total</th></tr></thead>
+      <tbody>
+      {% for c in resumo.por_categoria %}
+        <tr><td>{{ c.nome }}</td><td><span class="tag tag-{{ c.tipo }}">{{ c.tipo|capitalize }}</span></td><td class="num">{{ c.total|brl }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<p class="vazio">Nenhum lançamento neste mês ainda.</p>{% endif %}
+  </section>
+  <section>
+    <h2>Últimos lançamentos</h2>
+    {% if recentes %}
+    <table>
+      <thead><tr><th>Data</th><th>Descrição</th><th class="num">Valor</th></tr></thead>
+      <tbody>
+      {% for l in recentes %}
+        <tr><td>{{ l.data|data_br }}</td><td>{{ l.descricao }}</td>
+            <td class="num {{ l.tipo }}">{{ '-' if l.tipo=='despesa' else '+' }} {{ l.valor|brl }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<p class="vazio">Registre seu primeiro lançamento do mês.</p>{% endif %}
+  </section>
+</div>
+{% endblock %}

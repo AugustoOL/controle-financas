@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'Editar' if categoria else 'Nova' }} categoria · Controle de Finanças{% endblock %}
+{% block conteudo %}
+<h1>{{ 'Editar' if categoria else 'Nova' }} categoria</h1>
+{% set nome = form.get('nome', categoria.nome if categoria else '') %}
+{% set tipo = form.get('tipo', categoria.tipo if categoria else 'despesa') %}
+<form method="post" class="form">
+  <label for="nome">Nome</label>
+  <input id="nome" name="nome" maxlength="50" required value="{{ nome }}" placeholder="Ex.: Mercado">
+  <label for="tipo">Tipo</label>
+  <select id="tipo" name="tipo" required>
+    <option value="despesa" {{ 'selected' if tipo=='despesa' }}>Despesa</option>
+    <option value="receita" {{ 'selected' if tipo=='receita' }}>Receita</option>
+  </select>
+  <div class="botoes">
+    <button class="btn" type="submit">Salvar</button>
+    <a class="btn btn-sec" href="{{ url_for('categorias.listar') }}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

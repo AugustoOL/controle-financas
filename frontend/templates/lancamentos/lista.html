@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block titulo %}Lançamentos · Controle de Finanças{% endblock %}
+{% block conteudo %}
+<div class="cab"><h1>Lançamentos</h1>
+  <a class="btn" href="{{ url_for('lancamentos.novo') }}">+ Novo lançamento</a></div>
+
+<form method="get" class="filtros">
+  <input type="search" name="q" value="{{ busca }}" placeholder="Buscar descrição" aria-label="Buscar por descrição">
+  <select name="tipo" aria-label="Filtrar por tipo">
+    <option value="">Todos os tipos</option>
+    <option value="receita" {{ 'selected' if tipo=='receita' }}>Receitas</option>
+    <option value="despesa" {{ 'selected' if tipo=='despesa' }}>Despesas</option>
+  </select>
+  <select name="categoria_id" aria-label="Filtrar por categoria">
+    <option value="">Todas as categorias</option>
+    {% for c in categorias %}<option value="{{ c.id }}" {{ 'selected' if categoria_id==c.id }}>{{ c.nome }}</option>{% endfor %}
+  </select>
+  <button class="btn btn-sec" type="submit">Filtrar</button>
+</form>
+
+<table>
+  <thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th class="num">Valor</th><th class="acoes">Ações</th></tr></thead>
+  <tbody>
+  {% for l in lancamentos %}
+    <tr>
+      <td>{{ l.data|data_br }}</td>
+      <td>{{ l.descricao }}{% if l.observacao %}<br><small>{{ l.observacao }}</small>{% endif %}</td>
+      <td><span class="tag tag-{{ l.tipo }}">{{ l.categoria.nome }}</span></td>
+      <td class="num {{ l.tipo }}">{{ '-' if l.tipo=='despesa' else '+' }} {{ l.valor|brl }}</td>
+      <td class="acoes">
+        <a href="{{ url_for('lancamentos.editar', id=l.id) }}">Editar</a>
+        <form method="post" action="{{ url_for('lancamentos.excluir', id=l.id) }}" onsubmit="return confirm('Excluir este lançamento?');">
+          <button class="link-perigo" type="submit">Excluir</button>
+        </form>
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="5" class="vazio">Nenhum lançamento encontrado.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
