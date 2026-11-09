@@ -4,12 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Controle de Finanças{% endblock %}</title>
+  <link rel="icon" type="image/webp" href="{{ url_for('static', filename='img/icone.webp') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <header class="topo">
     <div class="container topo-int">
-      <a class="marca" href="{{ url_for('dashboard.index') }}">💰 Controle de Finanças</a>
+      <a class="marca" href="{{ url_for('dashboard.index') }}"><img src="{{ url_for('static', filename='img/logo.webp') }}" alt="Controle de Finanças" class="logo"></a>
       <nav aria-label="Navegação principal">
         {% if g.usuario %}
         <a href="{{ url_for('dashboard.index') }}" {% if request.endpoint=='dashboard.index' %}aria-current="page"{% endif %}>Resumo</a>

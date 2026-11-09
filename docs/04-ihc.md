@@ -14,7 +14,7 @@ flowchart TD
     C --> NC[Nova categoria]
     C --> EC[Editar categoria]
 ```
-Logado, todas as telas têm o mesmo menu no topo (Resumo, Lançamentos, Categorias), o nome do usuário e o botão "Sair". Deslogado, o menu mostra só "Entrar" e "Criar conta"; qualquer tela interna leva ao login.
+Logado, todas as telas têm o mesmo menu no topo (Resumo, Lançamentos, Categorias), o nome do usuário e o botão "Sair". As telas **Entrar** e **Criar conta** não têm o cabeçalho: são um cartão centralizado com o logo, campos com rótulo animado e transição suave entre as duas telas; qualquer tela interna leva ao login.
 
 ## 4.2 Telas
 | Tela | Objetivo | Imagem |
@@ -47,7 +47,7 @@ Logado, todas as telas têm o mesmo menu no topo (Resumo, Lançamentos, Categori
 | Senhas diferentes | "A confirmação de senha não confere." |
 | E-mail já cadastrado | "Já existe uma conta com esse e-mail." |
 | Login incorreto | "E-mail ou senha incorretos." (genérica de propósito) |
-| Tela interna sem login | "Faça login para continuar." |
+| Tela interna sem login | Sem mensagem: o sistema apenas leva à tela de login |
 | Cadastro / logout ok | "Conta criada com sucesso. Bem-vindo(a)!", "Você saiu da sua conta." |
 | Descrição vazia | "A descrição é obrigatória." |
 | Valor inválido | "Informe um valor numérico válido." |

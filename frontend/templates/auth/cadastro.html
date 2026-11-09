@@ -1,19 +1,34 @@
-{% extends "base.html" %}
+{% extends "auth/base_auth.html" %}
 {% block titulo %}Criar conta · Controle de Finanças{% endblock %}
+{% block cabecalho %}Criar conta{% endblock %}
 {% block conteudo %}
-<h1>Criar conta</h1>
-<form method="post" class="form">
-  <label for="nome">Nome</label>
-  <input id="nome" name="nome" maxlength="80" required autocomplete="name" value="{{ form.get('nome', '') }}">
-  <label for="email">E-mail</label>
-  <input id="email" name="email" type="email" maxlength="120" required autocomplete="email" value="{{ form.get('email', '') }}">
-  <label for="senha">Senha (mínimo 6 caracteres)</label>
-  <input id="senha" name="senha" type="password" minlength="6" required autocomplete="new-password">
-  <label for="confirmacao">Confirmar senha</label>
-  <input id="confirmacao" name="confirmacao" type="password" minlength="6" required autocomplete="new-password">
-  <div class="botoes">
-    <button class="btn" type="submit">Criar conta</button>
-    <a class="btn btn-sec" href="{{ url_for('auth.login') }}">Já tenho conta</a>
+{% macro erro(c) %}{% if erros.get(c) %}<small class="erro-campo" role="alert">{{ erros[c] }}</small>{% endif %}{% endmacro %}
+<form method="post" novalidate>
+  <div class="campo{{ ' invalido' if 'nome' in erros }}">
+    <input id="nome" name="nome" maxlength="80" required autocomplete="name" autofocus placeholder=" " value="{{ form.get('nome', '') }}">
+    <label for="nome">Nome</label>
+    <span class="icone" aria-hidden="true">👤</span>
+    {{ erro('nome') }}
   </div>
+  <div class="campo{{ ' invalido' if 'email' in erros }}">
+    <input id="email" name="email" type="email" maxlength="120" required autocomplete="email" placeholder=" " value="{{ form.get('email', '') }}">
+    <label for="email">E-mail</label>
+    <span class="icone" aria-hidden="true">✉</span>
+    {{ erro('email') }}
+  </div>
+  <div class="campo{{ ' invalido' if 'senha' in erros }}">
+    <input id="senha" name="senha" type="password" required autocomplete="new-password" placeholder=" ">
+    <label for="senha">Senha (mínimo 6 caracteres)</label>
+    <button type="button" class="ver-senha" aria-label="Mostrar senha" aria-pressed="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line class="risco" x1="3" y1="3" x2="21" y2="21"/></svg></button>
+    {{ erro('senha') }}
+  </div>
+  <div class="campo{{ ' invalido' if 'confirmacao' in erros }}">
+    <input id="confirmacao" name="confirmacao" type="password" required autocomplete="new-password" placeholder=" ">
+    <label for="confirmacao">Confirmar senha</label>
+    <button type="button" class="ver-senha" aria-label="Mostrar senha" aria-pressed="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line class="risco" x1="3" y1="3" x2="21" y2="21"/></svg></button>
+    {{ erro('confirmacao') }}
+  </div>
+  <button class="btn auth-btn" type="submit">Criar conta</button>
 </form>
+<p class="auth-troca">Já tem uma conta? <a href="{{ url_for('auth.login') }}" data-troca>Entrar</a></p>
 {% endblock %}

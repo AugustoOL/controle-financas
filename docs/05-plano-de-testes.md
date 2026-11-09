@@ -43,6 +43,6 @@ Execute com `cd backend && python -m pytest -v`. Resultado atual: **59 testes, t
 | CT17 | Senha curta | Senha com 5 caracteres | Erro "A senha deve ter no mínimo 6 caracteres." |
 | CT18 | Senhas diferentes | Confirmação diferente da senha | Erro "A confirmação de senha não confere." e nome/e-mail mantidos |
 | CT19 | Login errado | E-mail ou senha incorretos | "E-mail ou senha incorretos." |
-| CT20 | Acesso sem login | Sem entrar, abrir `/` ou `/lancamentos/` | Vai para o login com "Faça login para continuar." |
+| CT20 | Acesso sem login | Sem entrar, abrir `/` ou `/lancamentos/` | Vai direto para a tela de login, sem mensagem de erro |
 | CT21 | Sair | Clicar em "Sair" e tentar abrir o resumo | Sessão encerrada; pede login |
 | CT22 | Isolamento | Com 2 contas (A e B): A cria lançamento; B abre a lista e tenta o endereço de edição do lançamento do A | B não vê nada de A; o endereço retorna "Página não encontrada" |

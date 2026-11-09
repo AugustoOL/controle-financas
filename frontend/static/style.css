@@ -2,11 +2,12 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.5}
 .container{max-width:960px;margin:0 auto;padding:0 16px}
-.topo{background:var(--verde);color:#fff}
+.topo{background:#fff;color:var(--txt);border-bottom:3px solid var(--verde)}
 .topo-int{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-top:12px;padding-bottom:12px}
-.marca{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}
-nav a{color:#d1fae5;text-decoration:none;margin-left:16px;padding:4px 2px}
-nav a[aria-current=page],nav a:hover{color:#fff;border-bottom:2px solid #fff}
+.marca{display:flex;align-items:center;text-decoration:none}
+.logo{height:44px;width:auto;display:block}
+nav a{color:var(--mut);text-decoration:none;margin-left:16px;padding:4px 2px}
+nav a[aria-current=page],nav a:hover{color:var(--verde);border-bottom:2px solid var(--verde)}
 main.container{padding-top:24px;padding-bottom:32px}
 h1{font-size:1.5rem;margin:0 0 16px}h2{font-size:1.1rem;margin:24px 0 8px}
 .cab{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px}
@@ -41,8 +42,48 @@ small{color:var(--mut)}
 input,select{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;background:#fff}
 .botoes{display:flex;gap:8px;margin-top:16px}
 .filtros{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.filtros input,.filtros select{width:auto;flex:1 1 160px}
-nav .usuario{color:#fff;margin-left:16px;font-weight:600}
+nav .usuario{color:var(--txt);margin-left:16px;font-weight:600}
 .form-sair{display:inline;margin:0 0 0 12px}
-.btn-link{background:none;border:0;color:#d1fae5;cursor:pointer;font:inherit;padding:4px 2px;text-decoration:underline}
-.btn-link:hover{color:#fff}
+.btn-link{background:none;border:0;color:var(--mut);cursor:pointer;font:inherit;padding:4px 2px;text-decoration:underline}
+.btn-link:hover{color:var(--verde)}
 @media(max-width:600px){nav a,nav .usuario{margin-left:10px}th,td{padding:8px}}
+
+/* ---------- Telas de login / cadastro ---------- */
+.auth-body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
+  background:linear-gradient(135deg,#0f766e,#134e4a 55%,#15803d);background-size:200% 200%;animation:auth-fundo 14s ease infinite}
+@keyframes auth-fundo{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.auth-card{width:100%;max-width:400px;background:rgba(255,255,255,.95);border-radius:20px;padding:28px 28px 24px;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);animation:auth-entra .45s ease both;transition:opacity .22s ease,transform .22s ease}
+.auth-card.saindo{opacity:0;transform:translateY(-14px) scale(.97)}
+@keyframes auth-entra{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.auth-logo{display:block;height:56px;width:auto;margin:0 auto 12px}
+.auth-card h1{text-align:center;margin:0 0 18px}
+.auth-card .aviso{margin:0 0 14px}
+.campo{position:relative;margin-bottom:20px}
+.campo input{width:100%;box-sizing:border-box;border:0;border-bottom:2px solid var(--txt);background:transparent;
+  padding:18px 32px 6px 0;font:inherit;color:var(--txt);outline:none;border-radius:0}
+.campo label{position:absolute;left:0;top:16px;color:var(--mut);pointer-events:none;transition:all .18s ease}
+.campo input:focus+label,.campo input:not(:placeholder-shown)+label{top:0;font-size:.75rem;color:var(--verde)}
+.campo input:focus{border-bottom-color:var(--verde)}
+.campo .icone{position:absolute;right:0;top:16px;opacity:.6;pointer-events:none}
+.auth-btn{width:100%;padding:12px;font-weight:600;margin-top:4px;transition:transform .1s ease,background .2s}
+.auth-btn:active{transform:scale(.98)}
+.auth-troca{text-align:center;margin:18px 0 0;color:var(--mut)}
+.auth-troca a{color:var(--verde);font-weight:600}
+@media (prefers-reduced-motion:reduce){.auth-body,.auth-card{animation:none}.auth-card,.campo label{transition:none}}
+.campo .icone{filter:grayscale(1)}
+.campo{margin-bottom:22px}
+.campo.invalido input{border-bottom-color:var(--desp)}
+.campo.invalido label{color:var(--desp)}
+.campo .icone{top:16px}
+.erro-campo{display:block;margin-top:6px;color:var(--desp);font-size:.82rem;animation:erro-entra .25s ease}
+.erro-campo::before{content:"⚠ "}
+.campo.invalido input{animation:erro-tremer .3s ease}
+@keyframes erro-entra{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@keyframes erro-tremer{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){.erro-campo,.campo.invalido input{animation:none}}
+.campo .ver-senha{position:absolute;right:0;top:14px;background:none;border:0;padding:2px;cursor:pointer;color:var(--mut);line-height:0;display:flex}
+.campo .ver-senha:hover,.campo .ver-senha:focus-visible{color:var(--verde)}
+.campo .ver-senha .risco{display:none}
+.campo .ver-senha.ativo .risco{display:block}
+.campo input[type=password],.campo input.tem-olho{padding-right:32px}

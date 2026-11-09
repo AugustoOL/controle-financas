@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Controle de Finanças{% endblock %}</title>
+  <link rel="icon" type="image/webp" href="{{ url_for('static', filename='img/icone.webp') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-body">
+  <main class="auth-card" id="auth-card">
+    <img src="{{ url_for('static', filename='img/logo.webp') }}" alt="Controle de Finanças" class="auth-logo">
+    <h1>{% block cabecalho %}{% endblock %}</h1>
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in msgs %}
+        <div class="aviso aviso-{{ cat }}" role="{{ 'alert' if cat == 'erro' else 'status' }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block conteudo %}{% endblock %}
+  </main>
+  <script>
+    // Olhinho: mostra/oculta a senha
+    document.querySelectorAll('.ver-senha').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var input = b.parentElement.querySelector('input');
+        var mostrar = input.type === 'password';
+        input.type = mostrar ? 'text' : 'password';
+        b.setAttribute('aria-pressed', mostrar);
+        b.setAttribute('aria-label', mostrar ? 'Ocultar senha' : 'Mostrar senha');
+        b.classList.toggle('ativo', mostrar);
+        input.focus();
+      });
+    });
+    // Transição suave ao alternar entre Entrar e Criar conta
+    document.querySelectorAll('a[data-troca]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var destino = a.href;
+        document.getElementById('auth-card').classList.add('saindo');
+        setTimeout(function () { window.location = destino; }, 220);
+      });
+    });
+  </script>
+</body>
+</html>
