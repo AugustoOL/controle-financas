@@ -41,5 +41,8 @@ small{color:var(--mut)}
 input,select{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;background:#fff}
 .botoes{display:flex;gap:8px;margin-top:16px}
 .filtros{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.filtros input,.filtros select{width:auto;flex:1 1 160px}
-.container.rodape{margin-top:8px;color:var(--mut);font-size:.85rem;padding-bottom:24px}
-@media(max-width:600px){nav a{margin-left:10px}th,td{padding:8px}}
+nav .usuario{color:#fff;margin-left:16px;font-weight:600}
+.form-sair{display:inline;margin:0 0 0 12px}
+.btn-link{background:none;border:0;color:#d1fae5;cursor:pointer;font:inherit;padding:4px 2px;text-decoration:underline}
+.btn-link:hover{color:#fff}
+@media(max-width:600px){nav a,nav .usuario{margin-left:10px}th,td{padding:8px}}

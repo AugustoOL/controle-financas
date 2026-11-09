@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo %}Criar conta · Controle de Finanças{% endblock %}
+{% block conteudo %}
+<h1>Criar conta</h1>
+<form method="post" class="form">
+  <label for="nome">Nome</label>
+  <input id="nome" name="nome" maxlength="80" required autocomplete="name" value="{{ form.get('nome', '') }}">
+  <label for="email">E-mail</label>
+  <input id="email" name="email" type="email" maxlength="120" required autocomplete="email" value="{{ form.get('email', '') }}">
+  <label for="senha">Senha (mínimo 6 caracteres)</label>
+  <input id="senha" name="senha" type="password" minlength="6" required autocomplete="new-password">
+  <label for="confirmacao">Confirmar senha</label>
+  <input id="confirmacao" name="confirmacao" type="password" minlength="6" required autocomplete="new-password">
+  <div class="botoes">
+    <button class="btn" type="submit">Criar conta</button>
+    <a class="btn btn-sec" href="{{ url_for('auth.login') }}">Já tenho conta</a>
+  </div>
+</form>
+{% endblock %}

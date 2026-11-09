@@ -16,6 +16,11 @@ class Config:
             break
     SQLALCHEMY_DATABASE_URI = _db
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Cookie de sessão: não acessível por JS, não enviado em requisições de outros sites;
+    # "Secure" (só HTTPS) quando roda no Render.
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = "RENDER" in os.environ
 
 
 class TestConfig(Config):

@@ -3,8 +3,8 @@
 <div class="cab">
   <h1>Resumo de {{ MESES[mes] }} de {{ ano }}</h1>
   <div class="mes-nav">
-    <a class="btn btn-sec" href="{{ url_for('dashboard.index', ano=ant[0], mes=ant[1]) }}" aria-label="Mês anterior">‹ Anterior</a>
-    <a class="btn btn-sec" href="{{ url_for('dashboard.index', ano=prox[0], mes=prox[1]) }}" aria-label="Próximo mês">Próximo ›</a>
+    <a class="btn btn-sec" href="{{ url_for('dashboard.index', ano=ant[0], mes=ant[1]) }}" aria-label="Mês anterior">‹ Mês anterior</a>
+    <a class="btn btn-sec" href="{{ url_for('dashboard.index', ano=prox[0], mes=prox[1]) }}" aria-label="Próximo mês">Próximo mês ›</a>
   </div>
 </div>
 

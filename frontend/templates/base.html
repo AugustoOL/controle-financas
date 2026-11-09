@@ -11,9 +11,18 @@
     <div class="container topo-int">
       <a class="marca" href="{{ url_for('dashboard.index') }}">💰 Controle de Finanças</a>
       <nav aria-label="Navegação principal">
+        {% if g.usuario %}
         <a href="{{ url_for('dashboard.index') }}" {% if request.endpoint=='dashboard.index' %}aria-current="page"{% endif %}>Resumo</a>
         <a href="{{ url_for('lancamentos.listar') }}" {% if request.endpoint and request.endpoint.startswith('lancamentos') %}aria-current="page"{% endif %}>Lançamentos</a>
         <a href="{{ url_for('categorias.listar') }}" {% if request.endpoint and request.endpoint.startswith('categorias') %}aria-current="page"{% endif %}>Categorias</a>
+        <span class="usuario">{{ g.usuario.nome }}</span>
+        <form method="post" action="{{ url_for('auth.sair') }}" class="form-sair">
+          <button type="submit" class="btn-link">Sair</button>
+        </form>
+        {% else %}
+        <a href="{{ url_for('auth.login') }}" {% if request.endpoint=='auth.login' %}aria-current="page"{% endif %}>Entrar</a>
+        <a href="{{ url_for('auth.cadastro') }}" {% if request.endpoint=='auth.cadastro' %}aria-current="page"{% endif %}>Criar conta</a>
+        {% endif %}
       </nav>
     </div>
   </header>
@@ -25,6 +34,5 @@
     {% endwith %}
     {% block conteudo %}{% endblock %}
   </main>
-  <footer class="container rodape">PIT II – Engenharia de Software · Controle de Finanças Pessoais</footer>
 </body>
 </html>

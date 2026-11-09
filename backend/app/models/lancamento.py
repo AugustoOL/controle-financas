@@ -16,7 +16,9 @@ class Lancamento(db.Model):
     data = db.Column(db.Date, nullable=False, default=date.today)
     observacao = db.Column(db.String(255))
     categoria_id = db.Column(db.Integer, db.ForeignKey("categoria.id"), nullable=False)
+    usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
 
+    usuario = db.relationship("Usuario", back_populates="lancamentos")
     categoria = db.relationship("Categoria", back_populates="lancamentos")
 
     @property
@@ -25,7 +27,7 @@ class Lancamento(db.Model):
 
     # ---------- validação ----------
     @staticmethod
-    def validar(descricao, valor, data, categoria_id):
+    def validar(usuario_id, descricao, valor, data, categoria_id):
         descricao = (descricao or "").strip()
         if not descricao:
             raise ValidacaoError("A descrição é obrigatória.")
@@ -54,24 +56,26 @@ class Lancamento(db.Model):
             categoria = db.session.get(Categoria, int(categoria_id))
         except (TypeError, ValueError):
             categoria = None
-        if categoria is None:
+        if categoria is None or categoria.usuario_id != usuario_id:
             raise ValidacaoError("Selecione uma categoria válida.")
 
         return descricao, valor, data, categoria
 
     # ---------- CRUD ----------
     @classmethod
-    def criar(cls, descricao, valor, data, categoria_id, observacao=None):
-        descricao, valor, data, categoria = cls.validar(descricao, valor, data, categoria_id)
+    def criar(cls, usuario_id, descricao, valor, data, categoria_id, observacao=None):
+        descricao, valor, data, categoria = cls.validar(
+            usuario_id, descricao, valor, data, categoria_id)
         obs = (observacao or "").strip()[:255] or None
         lanc = cls(descricao=descricao, valor=valor, data=data,
-                   categoria=categoria, observacao=obs)
+                   categoria=categoria, observacao=obs, usuario_id=usuario_id)
         db.session.add(lanc)
         db.session.commit()
         return lanc
 
     def atualizar(self, descricao, valor, data, categoria_id, observacao=None):
-        descricao, valor, data, categoria = self.validar(descricao, valor, data, categoria_id)
+        descricao, valor, data, categoria = self.validar(
+            self.usuario_id, descricao, valor, data, categoria_id)
         self.descricao, self.valor, self.data = descricao, valor, data
         self.categoria = categoria
         self.observacao = (observacao or "").strip()[:255] or None
@@ -83,9 +87,10 @@ class Lancamento(db.Model):
 
     # ---------- consultas ----------
     @classmethod
-    def do_mes(cls, ano, mes):
+    def do_mes(cls, usuario_id, ano, mes):
         return (cls.query
-                .filter(extract("year", cls.data) == ano, extract("month", cls.data) == mes)
+                .filter(cls.usuario_id == usuario_id,
+                        extract("year", cls.data) == ano, extract("month", cls.data) == mes)
                 .order_by(cls.data.desc(), cls.id.desc())
                 .all())
 

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from flask import Flask
+from flask import Flask, g, session
 
 from config import Config
 from .extensions import db
@@ -35,31 +35,24 @@ def create_app(config_class=Config):
         from flask import render_template
         return render_template("404.html"), 404
 
+    @app.before_request
+    def carregar_usuario():
+        from .models import Usuario
+        uid = session.get("usuario_id")
+        g.usuario = db.session.get(Usuario, uid) if uid else None
+
+    from .controllers.auth import bp as auth_bp
     from .controllers.dashboard import bp as dashboard_bp
     from .controllers.categorias import bp as categorias_bp
     from .controllers.lancamentos import bp as lancamentos_bp
 
+    app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(categorias_bp)
     app.register_blueprint(lancamentos_bp)
 
     with app.app_context():
-        from .models import Categoria  # noqa: F401
+        from . import models  # noqa: F401
         db.create_all()
-        _semear_categorias_padrao(Categoria)
 
     return app
-
-
-def _semear_categorias_padrao(Categoria):
-    """Cria categorias iniciais na primeira execução."""
-    if Categoria.query.count() > 0:
-        return
-    padrao = [
-        ("Salário", "receita"), ("Renda extra", "receita"),
-        ("Alimentação", "despesa"), ("Moradia", "despesa"),
-        ("Transporte", "despesa"), ("Lazer", "despesa"), ("Saúde", "despesa"),
-    ]
-    for nome, tipo in padrao:
-        db.session.add(Categoria(nome=nome, tipo=tipo))
-    db.session.commit()

@@ -11,9 +11,13 @@ class Categoria(db.Model):
     __tablename__ = "categoria"
 
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(50), nullable=False, unique=True)
+    nome = db.Column(db.String(50), nullable=False)
     tipo = db.Column(db.String(10), nullable=False)  # receita | despesa
+    usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
 
+    __table_args__ = (db.UniqueConstraint("usuario_id", "nome", name="uq_categoria_usuario_nome"),)
+
+    usuario = db.relationship("Usuario", back_populates="categorias")
     lancamentos = db.relationship("Lancamento", back_populates="categoria")
 
     @staticmethod
@@ -28,11 +32,12 @@ class Categoria(db.Model):
         return nome
 
     @classmethod
-    def criar(cls, nome, tipo):
+    def criar(cls, usuario_id, nome, tipo):
         nome = cls.validar(nome, tipo)
-        if cls.query.filter(db.func.lower(cls.nome) == nome.lower()).first():
+        if cls.query.filter(cls.usuario_id == usuario_id,
+                            db.func.lower(cls.nome) == nome.lower()).first():
             raise ValidacaoError("Já existe uma categoria com esse nome.")
-        cat = cls(nome=nome, tipo=tipo)
+        cat = cls(nome=nome, tipo=tipo, usuario_id=usuario_id)
         db.session.add(cat)
         db.session.commit()
         return cat
@@ -40,6 +45,7 @@ class Categoria(db.Model):
     def atualizar(self, nome, tipo):
         nome = self.validar(nome, tipo)
         outra = Categoria.query.filter(
+            Categoria.usuario_id == self.usuario_id,
             db.func.lower(Categoria.nome) == nome.lower(), Categoria.id != self.id
         ).first()
         if outra:

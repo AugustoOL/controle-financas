@@ -6,7 +6,7 @@ Projeto Integrador Transdisciplinar em Engenharia de Software II (PIT II).
 - **Back-end:** Python 3 + Flask (padrão **MVC**, com Blueprints) + SQLAlchemy
 - **Banco de dados:** SQLite (desenvolvimento) / PostgreSQL (produção)
 - **Front-end:** HTML + CSS (templates Jinja2)
-- **Testes:** pytest (30 testes automatizados)
+- **Testes:** pytest (59 testes automatizados)
 
 ## Como executar
 ```bash
@@ -16,7 +16,17 @@ source .venv/bin/activate
 pip install -r requirements.txt
 python run.py           
 ```
-O banco é criado automaticamente na primeira execução, com categorias padrão.
+O banco é criado automaticamente na primeira execução. Cada usuário novo (tela **Criar conta**) recebe as categorias padrão.
+
+> ⚠️ **Banco antigo (de antes do login):** `db.create_all()` não altera tabelas já existentes, então o banco anterior não funciona com a versão com login.
+> - **Local:** apague o arquivo `database/financas.db` e rode de novo.
+> - **Render:** apague o banco `financas-db`, crie um novo PostgreSQL (Free, mesma região) e atualize a variável `DATABASE_URL` do Web Service com a nova *Internal Database URL* (isso também reinicia o prazo de validade do banco gratuito).
+
+## Login e segurança
+- Cadastro e login por e-mail e senha (senha guardada só como *hash*; mínimo de 6 caracteres).
+- Cada usuário vê e altera apenas os próprios lançamentos e categorias; itens de outro usuário respondem 404.
+- Telas de resumo, lançamentos e categorias exigem login. O logout é por POST.
+- Cookie de sessão `HttpOnly` + `SameSite=Lax`, e `Secure` quando a variável `RENDER` existe. Defina um `SECRET_KEY` próprio em produção.
 
 ## Testes
 ```bash
@@ -38,7 +48,7 @@ controle-financas/
 │   └── static/               #   CSS
 ├── database/                 # BANCO DE DADOS
 │   ├── schema.sql            #   criação das tabelas (projeto físico)
-│   ├── dados_iniciais.sql    #   categorias padrão
+│   ├── dados_iniciais.sql    #   categorias padrão (criadas por usuário)
 │   └── financas.db           #   arquivo SQLite (criado ao rodar; não vai ao Git)
 └── docs/                     # DOCUMENTAÇÃO (requisitos, UML, banco, IHC, testes)
 ```

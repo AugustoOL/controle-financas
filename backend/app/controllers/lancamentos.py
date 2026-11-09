@@ -1,16 +1,27 @@
 from datetime import date
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, abort, flash, g, redirect, render_template, request, url_for
 
 from app.extensions import db
 from app.models import Categoria, Lancamento
 from app.models.categoria import ValidacaoError
 
+from .auth import exigir_login
+
 bp = Blueprint("lancamentos", __name__, url_prefix="/lancamentos")
+bp.before_request(exigir_login)
+
+
+def _meu(id):
+    """Lançamento do usuário logado; de outro usuário -> 404."""
+    lanc = db.session.get(Lancamento, id)
+    if lanc is None or lanc.usuario_id != g.usuario.id:
+        abort(404)
+    return lanc
 
 
 def _categorias():
-    return Categoria.query.order_by(Categoria.tipo, Categoria.nome).all()
+    return Categoria.query.filter_by(usuario_id=g.usuario.id).order_by(Categoria.tipo, Categoria.nome).all()
 
 
 @bp.route("/")
@@ -19,7 +30,7 @@ def listar():
     categoria_id = request.args.get("categoria_id", type=int)
     busca = (request.args.get("q") or "").strip()
 
-    q = Lancamento.query.join(Categoria)
+    q = Lancamento.query.join(Categoria).filter(Lancamento.usuario_id == g.usuario.id)
     if tipo in ("receita", "despesa"):
         q = q.filter(Categoria.tipo == tipo)
     if categoria_id:
@@ -38,7 +49,7 @@ def novo():
     if request.method == "POST":
         f = request.form
         try:
-            Lancamento.criar(f.get("descricao"), f.get("valor"), f.get("data"),
+            Lancamento.criar(g.usuario.id, f.get("descricao"), f.get("valor"), f.get("data"),
                              f.get("categoria_id"), f.get("observacao"))
             flash("Lançamento registrado com sucesso.", "sucesso")
             return redirect(url_for("lancamentos.listar"))
@@ -51,7 +62,7 @@ def novo():
 
 @bp.route("/<int:id>/editar", methods=["GET", "POST"])
 def editar(id):
-    lanc = db.get_or_404(Lancamento, id)
+    lanc = _meu(id)
     if request.method == "POST":
         f = request.form
         try:
@@ -69,7 +80,7 @@ def editar(id):
 
 @bp.route("/<int:id>/excluir", methods=["POST"])
 def excluir(id):
-    lanc = db.get_or_404(Lancamento, id)
+    lanc = _meu(id)
     lanc.excluir()
     flash("Lançamento excluído.", "sucesso")
     return redirect(url_for("lancamentos.listar"))

@@ -8,7 +8,7 @@
 | 1:30–2:30 | Banco de dados: DER, dicionário de dados e `database/schema.sql` |
 | 2:30–4:00 | Demonstração: criar categoria, registrar receita e despesa, editar, excluir, filtrar |
 | 4:00–4:40 | Tratamento de erros: valor negativo, descrição vazia, categoria duplicada |
-| 4:40–5:30 | Rodar `python -m pytest -v` (dentro de `backend`) mostrando os 30 testes passando |
+| 4:40–5:30 | Rodar `python -m pytest -v` (dentro de `backend`) mostrando os 59 testes passando |
 | 5:30–6:00 | Conclusão e link da solução hospedada |
 
 ## Vídeo 2 — Solução atualizada (até 5 min)
