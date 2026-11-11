@@ -11,20 +11,24 @@
   <header class="topo">
     <div class="container topo-int">
       <a class="marca" href="{{ url_for('dashboard.index') }}"><img src="{{ url_for('static', filename='img/logo.webp') }}" alt="Controle de Finanças" class="logo"></a>
-      <nav aria-label="Navegação principal">
-        {% if g.usuario %}
+      {% if g.usuario %}
+      <nav class="menu" aria-label="Navegação principal">
         <a href="{{ url_for('dashboard.index') }}" {% if request.endpoint=='dashboard.index' %}aria-current="page"{% endif %}>Resumo</a>
         <a href="{{ url_for('lancamentos.listar') }}" {% if request.endpoint and request.endpoint.startswith('lancamentos') %}aria-current="page"{% endif %}>Lançamentos</a>
         <a href="{{ url_for('categorias.listar') }}" {% if request.endpoint and request.endpoint.startswith('categorias') %}aria-current="page"{% endif %}>Categorias</a>
+      </nav>
+      <div class="conta">
         <span class="usuario">{{ g.usuario.nome }}</span>
         <form method="post" action="{{ url_for('auth.sair') }}" class="form-sair">
           <button type="submit" class="btn-link">Sair</button>
         </form>
-        {% else %}
+      </div>
+      {% else %}
+      <nav class="menu" aria-label="Navegação principal">
         <a href="{{ url_for('auth.login') }}" {% if request.endpoint=='auth.login' %}aria-current="page"{% endif %}>Entrar</a>
         <a href="{{ url_for('auth.cadastro') }}" {% if request.endpoint=='auth.cadastro' %}aria-current="page"{% endif %}>Criar conta</a>
-        {% endif %}
       </nav>
+      {% endif %}
     </div>
   </header>
   <main class="container">
@@ -35,5 +39,6 @@
     {% endwith %}
     {% block conteudo %}{% endblock %}
   </main>
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </body>
 </html>

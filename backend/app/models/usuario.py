@@ -38,6 +38,8 @@ class Usuario(db.Model):
             raise ValidacaoError("O nome deve ter no máximo 80 caracteres.", "nome")
         if len(email) > 120 or not EMAIL_RE.match(email):
             raise ValidacaoError("Informe um e-mail válido.", "email")
+        if not senha.strip():
+            raise ValidacaoError("A senha não pode conter apenas espaços.", "senha")
         if len(senha) < SENHA_MIN:
             raise ValidacaoError(f"A senha deve ter no mínimo {SENHA_MIN} caracteres.", "senha")
         if senha != (confirmacao or ""):

@@ -6,7 +6,7 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;bac
 .topo-int{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-top:12px;padding-bottom:12px}
 .marca{display:flex;align-items:center;text-decoration:none}
 .logo{height:44px;width:auto;display:block}
-nav a{color:var(--mut);text-decoration:none;margin-left:16px;padding:4px 2px}
+nav a{color:var(--mut);text-decoration:none;padding:4px 2px}
 nav a[aria-current=page],nav a:hover{color:var(--verde);border-bottom:2px solid var(--verde)}
 main.container{padding-top:24px;padding-bottom:32px}
 h1{font-size:1.5rem;margin:0 0 16px}h2{font-size:1.1rem;margin:24px 0 8px}
@@ -17,8 +17,7 @@ h1{font-size:1.5rem;margin:0 0 16px}h2{font-size:1.1rem;margin:24px 0 8px}
 .btn-sec{background:#fff;color:var(--verde);border:1px solid var(--verde)}
 .btn-sec:hover{background:#ecfdf5}
 .btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid #99f6e4;outline-offset:2px}
-.mes-nav{display:flex;gap:8px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
 .card{background:var(--card);border:1px solid var(--bor);border-radius:12px;padding:16px;border-left:6px solid var(--mut)}
 .card span{display:block;color:var(--mut);font-size:.9rem}.card strong{font-size:1.5rem}
 .card.receita{border-left-color:var(--rec)}.card.despesa{border-left-color:var(--desp)}
@@ -41,12 +40,10 @@ small{color:var(--mut)}
 .form label{font-weight:600;margin-top:8px}
 input,select{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;background:#fff}
 .botoes{display:flex;gap:8px;margin-top:16px}
-.filtros{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.filtros input,.filtros select{width:auto;flex:1 1 160px}
-nav .usuario{color:var(--txt);margin-left:16px;font-weight:600}
-.form-sair{display:inline;margin:0 0 0 12px}
+.usuario{color:var(--txt);font-weight:600}
+.form-sair{display:inline;margin:0}
 .btn-link{background:none;border:0;color:var(--mut);cursor:pointer;font:inherit;padding:4px 2px;text-decoration:underline}
 .btn-link:hover{color:var(--verde)}
-@media(max-width:600px){nav a,nav .usuario{margin-left:10px}th,td{padding:8px}}
 
 /* ---------- Telas de login / cadastro ---------- */
 .auth-body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
@@ -87,3 +84,122 @@ nav .usuario{color:var(--txt);margin-left:16px;font-weight:600}
 .campo .ver-senha .risco{display:none}
 .campo .ver-senha.ativo .risco{display:block}
 .campo input[type=password],.campo input.tem-olho{padding-right:32px}
+
+/* ---------- Cabeçalho fixo, títulos e cartões (desktop e celular) ---------- */
+.topo{position:sticky;top:0;z-index:50}
+.topo-int{flex-wrap:nowrap;gap:12px}
+.marca{margin-right:auto}
+.menu{display:flex;gap:16px}
+.conta{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.conta .usuario{max-width:16ch;overflow:hidden;text-overflow:ellipsis}
+.cab{flex-wrap:nowrap;min-width:0}
+.cab h1,.cab h2{min-width:0;margin:0}
+.cab .btn{white-space:nowrap;flex:none}
+.cab-secao{margin:24px 0 8px}
+.titulo-mes{white-space:nowrap;font-size:clamp(1rem,5.4vw,1.5rem)}
+.card strong{display:block;white-space:nowrap;overflow:hidden;font-size:clamp(.8rem,4vw,1.5rem)}
+
+/* ---------- Celular: cabeçalho compacto, tabelas viram cartões ---------- */
+@media(max-width:640px){
+  .container{padding:0 12px}
+  .topo-int{flex-wrap:wrap;gap:2px 10px;padding-top:8px;padding-bottom:4px}
+  .logo{height:30px}
+  .marca{order:1}
+  .conta{order:2;gap:8px;font-size:.9rem}
+  .conta .usuario{max-width:11ch}
+  .menu{order:3;flex-basis:100%;justify-content:space-between;gap:4px;border-top:1px solid var(--bor);margin-top:4px}
+  .menu a{padding:6px 4px;font-size:.9rem}
+  main.container{padding-top:14px;padding-bottom:24px}
+  h1{font-size:clamp(1.05rem,5.5vw,1.5rem)}
+  h2{font-size:1rem}
+  .cab .btn{padding:7px 10px;font-size:.85rem}
+  .cards{gap:8px}
+  .card{padding:10px 8px 10px 10px;border-left-width:4px;border-radius:10px}
+  .card span{font-size:.72rem}
+
+  table.resp{display:block;border:0;background:none;overflow:visible}
+  .resp thead{display:none}
+  .resp tbody{display:block}
+  .resp tr{display:grid;grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"titulo valor" "sub1 sub2" "acoes acoes";column-gap:8px;
+    background:var(--card);border:1px solid var(--bor);border-radius:12px;padding:10px 12px;margin-bottom:10px}
+  .resp td{display:block;border:0;padding:2px 0;min-width:0}
+  .resp .ar-titulo{grid-area:titulo;font-weight:600;overflow-wrap:anywhere}
+  .resp .ar-valor{grid-area:valor;text-align:right;font-weight:600}
+  .resp .ar-sub1{grid-area:sub1}
+  .resp .ar-sub2{grid-area:sub2;text-align:right;color:var(--mut);font-size:.85rem}
+  .resp td.acoes{grid-area:acoes;display:flex;gap:16px;margin-top:6px;padding-top:8px;border-top:1px solid var(--bor)}
+  .resp td.acoes a{margin:0}
+  .resp td.vazio{grid-area:auto;grid-column:1/-1}
+  .duas-col{gap:8px}
+}
+
+/* ---------- Filtros, seletor de mês, lista com seleção e paginação ---------- */
+.acoes a{color:var(--verde)}
+.btn-perigo{background:#fff;color:var(--desp);border:1px solid var(--desp)}
+.btn-perigo:hover{background:#fee2e2}
+.barra-lista{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 12px;margin:4px 0 10px}
+.total-filtro{margin:0;color:var(--mut);font-size:.9rem}
+.total-filtro .receita{color:var(--rec)}.total-filtro .despesa{color:var(--desp)}
+.barra-acoes{display:flex;gap:8px}.barra-acoes form{margin:0}
+th.sel,td.sel{width:34px;padding-right:0}
+td.sel input,th.sel input{width:18px;height:18px;margin:0}
+.paginacao{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:14px 0}
+.paginacao .btn{padding:7px 12px}
+@media(max-width:640px){
+  .conta .usuario{max-width:15ch}
+  .barra-lista{flex-direction:column;align-items:flex-start}
+  .resp-sel thead th.sel{display:none}
+  .resp-sel tr{grid-template-columns:auto minmax(0,1fr) auto;
+    grid-template-areas:"sel titulo valor" "sel sub1 sub2" "acoes acoes acoes"}
+  .resp-sel td.sel{grid-area:sel;padding:4px 10px 0 0}
+  .resp-sel td.vazio{grid-column:1/-1}
+}
+
+/* ---------- Barra do mês (uma linha só), abas do resumo e filtros compactos ---------- */
+.cab-mes{flex-wrap:wrap;gap:8px 16px;margin-bottom:12px}
+.mes-bar{display:flex;align-items:center;gap:8px}
+.btn-nav{padding:8px 12px;white-space:nowrap}
+.seletor-mes{display:flex;gap:8px;margin:0}
+.seletor-mes select{width:auto;min-width:130px}
+.seletor-mes input{width:84px}
+.seletor-mes select,.seletor-mes input{padding:8px 10px}
+.btn-sm{padding:6px 12px;font-size:.85rem;border-radius:7px}
+.abas{display:none}
+.filtros-simples{display:flex;align-items:center;gap:8px;margin:12px 0}
+.filtros-simples select{width:auto;min-width:200px}
+.filtros-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px 12px;margin:12px 0;align-items:end}
+.fl{display:flex;flex-direction:column;gap:3px;min-width:0}
+.fl label{font-size:.75rem;color:var(--mut);font-weight:600}
+.fl input,.fl select{padding:8px 10px;font-size:.9rem;min-width:0}
+.f-busca{grid-column:span 5}.f-tipo{grid-column:span 3}.f-cat{grid-column:span 4}
+.mais-filtros{grid-column:1/-1}
+.mais-filtros>summary{display:none;cursor:pointer;font-weight:600;color:var(--verde);padding:8px 2px;list-style:none}
+.mais-filtros>summary::-webkit-details-marker{display:none}
+.mais-filtros>summary small{color:var(--mut);font-weight:400}
+.mais-filtros>summary::after{content:" ▾"}
+.mais-filtros[open]>summary::after{content:" ▴"}
+.grid-interno{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px 12px;align-items:end}
+.f-de,.f-ate,.f-vmin,.f-vmax,.f-ord,.f-sent{grid-column:span 2}
+.btn-perigo[disabled]{opacity:.45;cursor:not-allowed;background:#fff}
+@media(max-width:640px){
+  .cab-mes{flex-direction:column;align-items:stretch;gap:8px}
+  .mes-bar{width:100%}
+  .btn-nav .rot{display:none}
+  .btn-nav{padding:8px 14px;font-size:1.1rem;line-height:1.2;flex:none}
+  .seletor-mes{flex:1;min-width:0}
+  .seletor-mes select{flex:1;min-width:0;width:auto}
+  .seletor-mes input{width:78px;flex:none}
+  .abas{display:flex;gap:6px;margin:16px 0 10px;border-bottom:2px solid var(--bor)}
+  .aba{flex:1;background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-2px;padding:10px 6px;font:inherit;font-weight:600;color:var(--mut);cursor:pointer}
+  .aba[aria-selected=true]{color:var(--verde);border-bottom-color:var(--verde)}
+  .painel{display:none}.painel.ativo{display:block}
+  .painel>h2{display:none}
+  .filtros-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
+  .f-busca{grid-column:1/-1}
+  .f-tipo,.f-cat,.f-de,.f-ate,.f-vmin,.f-vmax,.f-ord,.f-sent{grid-column:span 1}
+  .mais-filtros>summary{display:block}
+  .grid-interno{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px;padding-top:4px}
+  .barra-acoes{flex-wrap:wrap}
+  .filtros-simples select{flex:1;min-width:0}
+}

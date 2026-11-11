@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from flask import Flask, g, session
+from flask import Flask, g, request, session
 
 from config import Config
 from .extensions import db
@@ -24,11 +24,30 @@ def create_app(config_class=Config):
         s = f"{valor:,.2f}"
         return "R$ " + s.replace(",", "X").replace(".", ",").replace("X", ".")
 
+    @app.template_filter("moeda_input")
+    def moeda_input(valor):
+        """Valor para campo de formulário: 1.234,56 (sem 'R$')."""
+        return brl(valor)[3:]
+
     @app.template_filter("data_br")
     def data_br(d):
         return d.strftime("%d/%m/%Y")
 
     app.jinja_env.globals["MESES"] = MESES
+
+    def limites_data():
+        from .models.lancamento import DATA_MIN, data_max
+        return DATA_MIN.isoformat(), data_max().isoformat()
+
+    app.jinja_env.globals["limites_data"] = limites_data
+
+    @app.after_request
+    def sem_cache_nas_telas(resposta):
+        # Telas internas não ficam em cache: depois de "Sair", o botão Voltar
+        # do navegador não mostra os dados da conta.
+        if request.endpoint != "static":
+            resposta.headers["Cache-Control"] = "no-store"
+        return resposta
 
     @app.errorhandler(404)
     def nao_encontrado(_e):

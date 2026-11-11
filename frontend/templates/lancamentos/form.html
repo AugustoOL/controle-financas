@@ -4,7 +4,7 @@
 <h1>{{ 'Editar' if lancamento else 'Novo' }} lançamento</h1>
 {% set v = form if form else {} %}
 {% set descricao = v.get('descricao', lancamento.descricao if lancamento else '') %}
-{% set valor = v.get('valor', lancamento.valor if lancamento else '') %}
+{% set valor = v.get('valor', (lancamento.valor|moeda_input) if lancamento else '') %}
 {% set data = v.get('data', lancamento.data.isoformat() if lancamento else hoje) %}
 {% set cat_id = (v.get('categoria_id', lancamento.categoria_id if lancamento else '')|string) %}
 {% set obs = v.get('observacao', (lancamento.observacao or '') if lancamento else '') %}
@@ -12,9 +12,10 @@
   <label for="descricao">Descrição</label>
   <input id="descricao" name="descricao" maxlength="100" required value="{{ descricao }}" placeholder="Ex.: Compras do mês">
   <label for="valor">Valor (R$)</label>
-  <input id="valor" name="valor" inputmode="decimal" required value="{{ valor }}" placeholder="0,00">
-  <label for="data">Data</label>
-  <input id="data" name="data" type="date" required value="{{ data }}">
+  <input id="valor" name="valor" inputmode="numeric" autocomplete="off" required value="{{ valor }}" placeholder="0,00" data-mascara-valor>
+  <label for="data">Data da compra ou do recebimento</label>
+  <input id="data" name="data" type="date" required value="{{ data }}" min="{{ limites_data()[0] }}" max="{{ limites_data()[1] }}" aria-describedby="data-ajuda">
+  <small id="data-ajuda">Informe o dia em que o gasto ou o recebimento aconteceu.</small>
   <label for="categoria_id">Categoria</label>
   <select id="categoria_id" name="categoria_id" required>
     <option value="">Selecione…</option>
@@ -24,6 +25,11 @@
   </select>
   <label for="observacao">Observação (opcional)</label>
   <input id="observacao" name="observacao" maxlength="255" value="{{ obs }}">
+  {% if not lancamento %}
+  <label for="repeticoes">Repetir por quantos meses?</label>
+  <input id="repeticoes" name="repeticoes" type="number" min="1" max="60" inputmode="numeric" value="{{ v.get('repeticoes', '1') }}" aria-describedby="rep-ajuda">
+  <small id="rep-ajuda">1 = só este lançamento. Ex.: 12 cria o mesmo lançamento todo mês, durante 12 meses.</small>
+  {% endif %}
   <div class="botoes">
     <button class="btn" type="submit">Salvar</button>
     <a class="btn btn-sec" href="{{ url_for('lancamentos.listar') }}">Cancelar</a>

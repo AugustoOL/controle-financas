@@ -4,29 +4,73 @@
 <div class="cab"><h1>Lançamentos</h1>
   <a class="btn" href="{{ url_for('lancamentos.novo') }}">+ Novo lançamento</a></div>
 
-<form method="get" class="filtros">
-  <input type="search" name="q" value="{{ busca }}" placeholder="Buscar descrição" aria-label="Buscar por descrição">
-  <select name="tipo" aria-label="Filtrar por tipo">
-    <option value="">Todos os tipos</option>
-    <option value="receita" {{ 'selected' if tipo=='receita' }}>Receitas</option>
-    <option value="despesa" {{ 'selected' if tipo=='despesa' }}>Despesas</option>
-  </select>
-  <select name="categoria_id" aria-label="Filtrar por categoria">
-    <option value="">Todas as categorias</option>
-    {% for c in categorias %}<option value="{{ c.id }}" {{ 'selected' if categoria_id==c.id }}>{{ c.nome }}</option>{% endfor %}
-  </select>
-  <button class="btn btn-sec" type="submit">Filtrar</button>
+<form method="get" class="filtros-grid" data-auto aria-label="Filtros da lista">
+  <div class="fl f-busca"><label for="f-q">Buscar</label>
+    <input id="f-q" type="search" name="q" value="{{ busca }}" placeholder="Descrição" autocomplete="off"></div>
+  <div class="fl f-tipo"><label for="f-tipo">Tipo</label>
+    <select id="f-tipo" name="tipo">
+      <option value="">Todos</option>
+      <option value="receita" {{ 'selected' if tipo=='receita' }}>Receitas</option>
+      <option value="despesa" {{ 'selected' if tipo=='despesa' }}>Despesas</option>
+    </select></div>
+  <div class="fl f-cat"><label for="f-cat">Categoria</label>
+    <select id="f-cat" name="categoria_id">
+      <option value="">Todas</option>
+      {% for c in categorias %}<option value="{{ c.id }}" {{ 'selected' if categoria_id==c.id }}>{{ c.nome }}</option>{% endfor %}
+    </select></div>
+  <details class="mais-filtros" {{ 'open' if avancado }}>
+    <summary>Mais filtros <small>(data, valor e ordem)</small></summary>
+    <div class="grid-interno">
+  <div class="fl f-de"><label for="f-de">Data de</label>
+    <input id="f-de" type="date" name="data_de" value="{{ f.get('data_de', '') }}"></div>
+  <div class="fl f-ate"><label for="f-ate">Data até</label>
+    <input id="f-ate" type="date" name="data_ate" value="{{ f.get('data_ate', '') }}"></div>
+  <div class="fl f-vmin"><label for="f-vmin">Valor mínimo</label>
+    <input id="f-vmin" name="valor_min" value="{{ f.get('valor_min', '') }}" placeholder="0,00" inputmode="numeric" autocomplete="off" data-mascara-valor></div>
+  <div class="fl f-vmax"><label for="f-vmax">Valor máximo</label>
+    <input id="f-vmax" name="valor_max" value="{{ f.get('valor_max', '') }}" placeholder="0,00" inputmode="numeric" autocomplete="off" data-mascara-valor></div>
+  <div class="fl f-ord"><label for="f-ord">Ordenar por</label>
+    <select id="f-ord" name="ordenar">
+      {% for chave, nome in ordenacoes.items() %}<option value="{{ chave }}" {{ 'selected' if ordenar==chave }}>{{ nome|capitalize }}</option>{% endfor %}
+    </select></div>
+  <div class="fl f-sent"><label for="f-sent">Ordem</label>
+    <select id="f-sent" name="ordem">
+      <option value="desc" {{ 'selected' if ordem=='desc' }}>Decrescente</option>
+      <option value="asc" {{ 'selected' if ordem=='asc' }}>Crescente</option>
+    </select></div>
+    </div>
+  </details>
+  <noscript><button class="btn btn-sec btn-sm" type="submit">Filtrar</button></noscript>
 </form>
 
-<table>
-  <thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th class="num">Valor</th><th class="acoes">Ações</th></tr></thead>
+<div class="barra-lista">
+  <p class="total-filtro" aria-live="polite">
+    <strong>{{ total }}</strong> lançamento{{ '' if total == 1 else 's' }}
+    · Receitas <span class="receita">{{ totais.receitas|brl }}</span>
+    · Despesas <span class="despesa">{{ totais.despesas|brl }}</span>
+    · Saldo <strong>{{ totais.saldo|brl }}</strong>
+  </p>
+  <div class="barra-acoes">
+    {% if filtrando %}<a class="btn btn-sec btn-sm" href="{{ url_for('lancamentos.listar') }}">Limpar filtros</a>{% endif %}
+    <a class="btn btn-sec btn-sm" href="{{ url_for('lancamentos.exportar', **base) }}">Exportar CSV</a>
+    <form id="lote" method="post" action="{{ url_for('lancamentos.excluir_lote') }}" data-confirmar="Excluir os lançamentos selecionados? Isso não pode ser desfeito.">
+      <button class="btn btn-perigo btn-sm" type="submit" data-lote-btn>Excluir selecionados</button>
+    </form>
+  </div>
+</div>
+
+<table class="resp resp-sel">
+  <thead><tr>
+    <th class="sel"><input type="checkbox" data-marcar-todos aria-label="Selecionar todos desta página"></th>
+    <th>Data</th><th>Descrição</th><th>Categoria</th><th class="num">Valor</th><th class="acoes">Ações</th></tr></thead>
   <tbody>
   {% for l in lancamentos %}
     <tr>
-      <td>{{ l.data|data_br }}</td>
-      <td>{{ l.descricao }}{% if l.observacao %}<br><small>{{ l.observacao }}</small>{% endif %}</td>
-      <td><span class="tag tag-{{ l.tipo }}">{{ l.categoria.nome }}</span></td>
-      <td class="num {{ l.tipo }}">{{ '-' if l.tipo=='despesa' else '+' }} {{ l.valor|brl }}</td>
+      <td class="sel ar-sel"><input type="checkbox" name="ids" value="{{ l.id }}" form="lote" aria-label="Selecionar {{ l.descricao }}"></td>
+      <td class="ar-sub2">{{ l.data|data_br }}</td>
+      <td class="ar-titulo">{{ l.descricao }}{% if l.observacao %}<br><small>{{ l.observacao }}</small>{% endif %}</td>
+      <td class="ar-sub1"><span class="tag tag-{{ l.tipo }}">{{ l.categoria.nome }}</span></td>
+      <td class="num ar-valor {{ l.tipo }}">{{ '-' if l.tipo=='despesa' else '+' }} {{ l.valor|brl }}</td>
       <td class="acoes">
         <a href="{{ url_for('lancamentos.editar', id=l.id) }}">Editar</a>
         <form method="post" action="{{ url_for('lancamentos.excluir', id=l.id) }}" onsubmit="return confirm('Excluir este lançamento?');">
@@ -35,8 +79,16 @@
       </td>
     </tr>
   {% else %}
-    <tr><td colspan="5" class="vazio">Nenhum lançamento encontrado.</td></tr>
+    <tr><td colspan="6" class="vazio">Nenhum lançamento encontrado.</td></tr>
   {% endfor %}
   </tbody>
 </table>
+
+{% if paginas > 1 %}
+<nav class="paginacao" aria-label="Páginas">
+  {% if pagina > 1 %}<a class="btn btn-sec" href="{{ url_for('lancamentos.listar', pagina=pagina-1, **base) }}">‹ Anterior</a>{% else %}<span></span>{% endif %}
+  <span>Página {{ pagina }} de {{ paginas }}</span>
+  {% if pagina < paginas %}<a class="btn btn-sec" href="{{ url_for('lancamentos.listar', pagina=pagina+1, **base) }}">Próxima ›</a>{% else %}<span></span>{% endif %}
+</nav>
+{% endif %}
 {% endblock %}

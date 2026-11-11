@@ -26,6 +26,28 @@ Logado, todas as telas têm o mesmo menu no topo (Resumo, Lançamentos, Categori
 | Novo/Editar lançamento | Formulário com validação | `img/novo_lancamento.png` |
 | Categorias | Gerenciar categorias | `img/categorias.png` |
 
+### 4.2.1 Cabeçalho fixo e responsividade
+- O cabeçalho é **fixo** (sticky) no topo em todas as telas, inclusive no celular, e não cobre o conteúdo.
+- No celular (até 640 px): logo e nome do usuário com "Sair" na **mesma linha**; o menu (Resumo, Lançamentos, Categorias) fica logo abaixo.
+- **Tabelas viram cartões** no celular (lançamentos, categorias e as do resumo): descrição e valor na 1ª linha, categoria e data na 2ª, ações embaixo; na lista de lançamentos, a caixa de seleção fica à esquerda. Sem rolagem horizontal.
+- Resumo: o título cabe em uma linha e os 3 cartões ficam na mesma linha também no celular (um script reduz a fonte do valor até caber). Não há botão "Novo lançamento" nessa tela (ele fica em Lançamentos).
+- **Barra do mês em uma linha só:** `‹ Mês anterior · [mês] [ano] · Próximo mês ›`; no computador ao lado do título e no celular só com as setas `‹ ›`. Escolher mês ou ano aplica na hora (sem botão "Ir").
+- **Abas no celular:** "Por categoria" e "Últimos lançamentos" viram duas abas (uma lista por vez); no computador as duas listas aparecem lado a lado.
+- Botão "Nova categoria" fica na linha do título.
+
+### 4.2.2 Formulário de lançamento
+- **Máscara de valor:** `123456` vira `1.234,56`; na edição o valor já vem formatado.
+- **Data:** rótulo "Data da compra ou do recebimento" e ajuda "Informe o dia em que o gasto ou o recebimento aconteceu." (`aria-describedby`); o calendário já limita o intervalo permitido.
+- **Repetir por quantos meses?** (só no novo lançamento): 1 = só este; até 60. Ajuda: "Ex.: 12 cria o mesmo lançamento todo mês, durante 12 meses."
+
+### 4.2.3 Lista de lançamentos, filtros e navegação
+- **Filtros automáticos:** não há botão "Filtrar"; a lista se atualiza ao mudar um campo (busca e valores esperam a pessoa parar de digitar). O botão "Limpar filtros" só aparece quando há filtro ativo. Sem JavaScript, aparece um botão "Filtrar".
+- Campos com rótulo em cima e em grade: busca, tipo e categoria na primeira linha; **"Mais filtros"** (data de/até, valor mínimo/máximo, ordenar por e ordem) logo abaixo. No celular "Mais filtros" fica recolhido (e abre sozinho se algum deles estiver em uso); no computador fica aberto.
+- Botões "Exportar CSV" e "Excluir selecionados" compactos; o de excluir só fica ativo quando há itens marcados e mostra a quantidade.
+- Faixa com o **total filtrado** (quantidade, receitas, despesas e saldo) e botões **Exportar CSV** e **Excluir selecionados**; "selecionar todos" no topo da tabela. A exclusão em lote pede confirmação.
+- **Paginação** de 20 em 20 ("Página 1 de 3").
+- Categorias: filtro por tipo, também automático. Resumo: seletor de mês e ano junto de "Mês anterior" e "Próximo mês".
+
 ## 4.3 Princípios de IHC aplicados
 | Princípio | Como foi aplicado |
 |---|---|
@@ -49,6 +71,14 @@ Logado, todas as telas têm o mesmo menu no topo (Resumo, Lançamentos, Categori
 | Login incorreto | "E-mail ou senha incorretos." (genérica de propósito) |
 | Tela interna sem login | Sem mensagem: o sistema apenas leva à tela de login |
 | Cadastro / logout ok | "Conta criada com sucesso. Bem-vindo(a)!", "Você saiu da sua conta." |
+| Data fora do intervalo | "Informe uma data entre 01/01/2000 e <data limite>." |
+| Senha só de espaços | "A senha não pode conter apenas espaços." |
+| Filtro de data/valor inválido | "Data inicial inválida: o filtro foi ignorado." (idem data final, valor mínimo/máximo) |
+| Intervalo invertido | "A data inicial é maior que a final: ..." / "O valor mínimo é maior que o máximo: ..." |
+| Repetição inválida | "Informe de 1 a 60 meses para repetir." |
+| Repetição com descrição longa | "A descrição é grande demais para repetir; encurte-a." |
+| Lote sem seleção | "Selecione ao menos um lançamento." |
+| Lote / repetição ok | "3 lançamentos excluídos.", "4 lançamentos registrados com sucesso (um por mês)." |
 | Descrição vazia | "A descrição é obrigatória." |
 | Valor inválido | "Informe um valor numérico válido." |
 | Valor ≤ 0 | "O valor deve ser maior que zero." |

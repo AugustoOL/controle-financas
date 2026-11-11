@@ -3,13 +3,22 @@
 {% block conteudo %}
 <div class="cab"><h1>Categorias</h1>
   <a class="btn" href="{{ url_for('categorias.nova') }}">+ Nova categoria</a></div>
-<table>
+<form method="get" class="filtros-simples" data-auto>
+  <select name="tipo" aria-label="Filtrar categorias por tipo">
+    <option value="">Todas as categorias</option>
+    <option value="receita" {{ 'selected' if tipo=='receita' }}>Só receitas</option>
+    <option value="despesa" {{ 'selected' if tipo=='despesa' }}>Só despesas</option>
+  </select>
+  {% if tipo %}<a class="btn btn-sec btn-sm" href="{{ url_for('categorias.listar') }}">Limpar</a>{% endif %}
+  <noscript><button class="btn btn-sec btn-sm" type="submit">Filtrar</button></noscript>
+</form>
+<table class="resp">
   <thead><tr><th>Nome</th><th>Tipo</th><th class="acoes">Ações</th></tr></thead>
   <tbody>
   {% for c in categorias %}
     <tr>
-      <td>{{ c.nome }}</td>
-      <td><span class="tag tag-{{ c.tipo }}">{{ c.tipo|capitalize }}</span></td>
+      <td class="ar-titulo">{{ c.nome }}</td>
+      <td class="ar-valor"><span class="tag tag-{{ c.tipo }}">{{ c.tipo|capitalize }}</span></td>
       <td class="acoes">
         <a href="{{ url_for('categorias.editar', id=c.id) }}">Editar</a>
         <form method="post" action="{{ url_for('categorias.excluir', id=c.id) }}" onsubmit="return confirm('Excluir a categoria {{ c.nome }}?');">

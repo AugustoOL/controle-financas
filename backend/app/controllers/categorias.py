@@ -20,8 +20,14 @@ def _minha(id):
 
 @bp.route("/")
 def listar():
-    categorias = Categoria.query.filter_by(usuario_id=g.usuario.id).order_by(Categoria.tipo, Categoria.nome).all()
-    return render_template("categorias/lista.html", categorias=categorias)
+    tipo = request.args.get("tipo", "")
+    q = Categoria.query.filter_by(usuario_id=g.usuario.id)
+    if tipo in ("receita", "despesa"):
+        q = q.filter_by(tipo=tipo)
+    else:
+        tipo = ""
+    categorias = q.order_by(Categoria.tipo, Categoria.nome).all()
+    return render_template("categorias/lista.html", categorias=categorias, tipo=tipo)
 
 
 @bp.route("/nova", methods=["GET", "POST"])
